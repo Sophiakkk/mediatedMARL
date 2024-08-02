@@ -9,7 +9,7 @@ from env.env import IterativePrisonersDilemma, Dilemma
 from src.n_step_threat.controller.controller import EyeOfGodNStep
 from src.vanilla_mediator.controller.controller import EyeOfGodVanilla
 
-from utils.wandb_notion import commit_to_notion
+from utils_pkg.wandb_notion import commit_to_notion
 
 
 @hydra.main(config_path='conf', config_name='config')

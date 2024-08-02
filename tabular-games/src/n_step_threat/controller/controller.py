@@ -7,7 +7,7 @@ from src.n_step_threat.agent.actor_critic_agent import ActorAgent, CriticAgent
 from src.n_step_threat.agent.agent import Agent
 from src.n_step_threat.mediator.actor_critic_mediator import ActorMediator, CriticMediator
 from src.n_step_threat.mediator.mediator import Mediator
-from utils.traj import ActorTraj
+from utils_pkg.traj import ActorTraj
 
 
 class EyeOfGodNStep(EyeOfGodBase):

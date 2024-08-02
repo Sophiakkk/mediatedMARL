@@ -1,7 +1,7 @@
 import requests
 import json
 from datetime import datetime
-from utils.build_json import build_json
+from utils_pkg.build_json import build_json
 import os
 
 
