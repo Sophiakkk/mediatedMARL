@@ -158,10 +158,10 @@ class EyeOfGodVanilla(EyeOfGodBase):
             # update
             self.update(trajectories)
 
-            if log:
-                if i % 100 == 0:
-                    print(f'ITERATION {i}:')
-                    self.evaluate_policy(eval_episodes, env)
+            # if log:
+            #     if i % 100 == 0:
+            #         print(f'ITERATION {i}:')
+            self.evaluate_policy(eval_episodes, env)
 
     def evaluate_policy(self, n_episodes, env):
         all_rewards = []

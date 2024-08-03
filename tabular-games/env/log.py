@@ -19,9 +19,9 @@ def pd_log(controller, reward, pick_mediator):
     std_step_reward = np.std(np.concatenate(reward))
     pick_mediator = np.mean(np.concatenate(pick_mediator))
 
-    print(f'{mean_step_reward=:.3f}\n{std_step_reward=:.3f}\n{pick_mediator=:.3f}')
-    print(f'ENTROPY_AGENT: {controller.agents[0].entropy_coef:.3f}, ENTROPY_MEDIATOR: {controller.mediator.entropy_coef:.3f}',
-          end='\n\n')
+    # print(f'{mean_step_reward=:.3f}\n{std_step_reward=:.3f}\n{pick_mediator=:.3f}')
+    # print(f'ENTROPY_AGENT: {controller.agents[0].entropy_coef:.3f}, ENTROPY_MEDIATOR: {controller.mediator.entropy_coef:.3f}',
+    #       end='\n\n')
 
     wandb.log({
         'step_reward_mean': mean_step_reward,
@@ -31,17 +31,20 @@ def pd_log(controller, reward, pick_mediator):
         'entropy_mediator': controller.mediator.entropy_coef,
     })
 
-    print('------ POLICY AGENTS ------')
-    print(format('D', ' >12'), end='')
-    print(format('C', ' >7'), end='')
-    print(format('MED', ' >9'))
+    # print('------ POLICY AGENTS ------')
+    # print(format('D', ' >12'), end='')
+    # print(format('C', ' >7'), end='')
+    # print(format('MED', ' >9'))
     for i in range(controller.n_agents):
         policy = controller.agents[i].get_policy(controller._tensorify(dummy_state))
         probs = policy.probs.detach().numpy()
-        print(f'AGENT {i}', end=' ')
-        print(probs[0])
+        wandb.log({f'agent_{i}_policy_for_D': probs[0][0]})
+        wandb.log({f'agent_{i}_policy_for_C': probs[0][1]})
+        wandb.log({f'agent_{i}_policy_for_MED': probs[0][2]})
+        # print("AGENT", i, probs[0])
+        # print(f'AGENT {i}', end=' ')
         policy_agents.append(probs[0])
-    print()
+    # print()
 
     # print('------ V APPROXIMATION AGENTS ------')
     # for i in range(controller.n_agents):
@@ -51,24 +54,28 @@ def pd_log(controller, reward, pick_mediator):
     #     print(v.detach().cpu().numpy()[0], end='\n')
     #     value_agents.append(v.detach().cpu().numpy()[0])
 
-    print('-------------------------------')
-    print()
+    # print('-------------------------------')
+    # print()
 
-    print('------ POLICY MEDIATOR ------')
+    # print('------ POLICY MEDIATOR ------')
     coalitions = torch.tensor([[0, 1], [1, 0], [1, 1]]).long()
-    print(format('AGENT 0', ' >28'), end='')
-    print(format('AGENT 1', ' >23'))
-    print(format('D     C', ' >28'), end='')
-    print(format('D     C', ' >23'))
+    # print(format('AGENT 0', ' >28'), end='')
+    # print(format('AGENT 1', ' >23'))
+    # print(format('D     C', ' >28'), end='')
+    # print(format('D     C', ' >23'))
     for coalition in coalitions:
         probs = []
         for agent_i in agent_is:
             policy = controller.mediator.get_policy(controller._tensorify([dummy_state, coalition, agent_i]))
             probs.append(policy.probs.detach().numpy())
 
-        print(f'MEDIATOR {coalition.numpy()}', end='   ')
-        print(f'{probs[0][0]}   |   {probs[1][0]}')
+        # print(f'MEDIATOR {coalition.numpy()}', end='   ')
+        # print(f'{probs[0][0]}   |   {probs[1][0]}')
         policy_mediator.append(np.array(probs))
+        wandb.log({f'mediator_policy_for_agent_0_D for coalition {coalition.numpy()}': probs[0][0][0]})
+        wandb.log({f'mediator_policy_for_agent_0_C for coalition {coalition.numpy()}': probs[0][0][1]})
+        wandb.log({f'mediator_policy_for_agent_1_D for coalition {coalition.numpy()}': probs[1][0][0]})
+        wandb.log({f'mediator_policy_for_agent_1_C for coalition {coalition.numpy()}': probs[1][0][1]})
 
 
     # print('------ V APPROXIMATION MEDIATOR ------')
