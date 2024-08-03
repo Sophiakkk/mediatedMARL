@@ -58,8 +58,8 @@ def pd_log(controller, reward, pick_mediator):
     coalitions = torch.tensor([[0, 1], [1, 0], [1, 1]]).long()
     print(format('AGENT 0', ' >28'), end='')
     print(format('AGENT 1', ' >23'))
-    print(format('C     D', ' >28'), end='')
-    print(format('C     D', ' >23'))
+    print(format('D     C', ' >28'), end='')
+    print(format('D     C', ' >23'))
     for coalition in coalitions:
         probs = []
         for agent_i in agent_is:
