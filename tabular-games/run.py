@@ -12,8 +12,11 @@ from src.vanilla_mediator.controller.controller import EyeOfGodVanilla
 
 from utils_pkg.wandb_notion import commit_to_notion
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--array_task_id', type=int, default=0)
 
 @hydra.main(config_path='conf', config_name='config')
+
 def train(cfg):
     cfg_notion = cfg.notion
     cfg = cfg.type
@@ -46,8 +49,6 @@ def train(cfg):
     return info
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--array_task_id', type=int, default=0)
     group = 'vanilla'
     name = group + "_" + str(parser.parse_args().array_task_id)
     wandb.init(project='Mediated_MARL_PD_vanilla', group=group, mode='online', name=name)
