@@ -46,11 +46,15 @@ def train(cfg):
 
     info = zog.evaluate_policy(eval_episodes, env)
     # mean_step_reward, pick_mediator, policy_agents, policy_mediator, value_agents, value_mediator
-    wandb.finish()
     return info
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--array_task_id', type=int, default=0)
+    array_id = parser.parse_args().array_task_id
+    print("array id is:, ", array_id)
     group = 'vanilla'
     name = group + "_" + str(parser.parse_args().array_task_id)
     wandb.init(project='Mediated_MARL_PD_vanilla', group=group, mode='online', name=name)
     train()
+    wandb.finish()
