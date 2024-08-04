@@ -45,10 +45,9 @@ def train(cfg):
     # mean_step_reward, pick_mediator, policy_agents, policy_mediator, value_agents, value_mediator
     return info
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--array_task_id', type=int, default=0)
-
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--array_task_id', type=int, default=0)
     group = 'vanilla'
     name = group + "_" + str(parser.parse_args().array_task_id)
     wandb.init(project='Mediated_MARL_PD_vanilla', group=group, mode='online', name=name)
