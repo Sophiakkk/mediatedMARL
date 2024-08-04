@@ -5,4 +5,4 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --array=1-10
 
-python run.py --array_task_id
+python run.py
