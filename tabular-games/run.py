@@ -36,9 +36,9 @@ def train(cfg):
         print('Specify the type of environment!')
         return -1
 
-    if cfg_notion.page is not None:
-        commit_to_notion(cfg_notion.page, wandb.run.get_url(), '/Users/Ilya.Zisman/work/mediator/tabular-games/utils/default.json')
-        # due to Hydra we need the absolute path here. Unfortunately.
+    # if cfg_notion.page is not None:
+    #     commit_to_notion(cfg_notion.page, wandb.run.get_url(), '/Users/Ilya.Zisman/work/mediator/tabular-games/utils/default.json')
+    #     # due to Hydra we need the absolute path here. Unfortunately.
 
     zog.train(env, True)
     # print(zog)
@@ -49,8 +49,6 @@ def train(cfg):
     return info
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--array_task_id', type=int, default=0)
     array_id = parser.parse_args().array_task_id
     print("array id is:, ", array_id)
     group = 'vanilla'
