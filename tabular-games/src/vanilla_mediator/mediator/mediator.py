@@ -63,8 +63,8 @@ class Mediator(MetaAgent, ABC):
 
         mediator_actor_loss_global = torch.cat(mediator_actor_loss_global)
 
-        wandb.log("mediator policy loss", mediator_actor_loss_global.mean().item())
-        wandb.log("mediator critic loss", mediator_critic_loss.item())
+        wandb.log({"mediator policy loss": mediator_actor_loss_global.mean().item()})
+        wandb.log({"mediator critic loss": mediator_critic_loss.item()})
 
         mediator_actor_loss_global.mean().backward()
 
