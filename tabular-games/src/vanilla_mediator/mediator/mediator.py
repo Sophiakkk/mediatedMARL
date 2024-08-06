@@ -6,6 +6,7 @@ import torch.nn.functional as F
 
 from src.base.meta_agent.meta_agent import MetaAgent
 from src.vanilla_mediator.mediator.actor_critic_mediator import ActorMediator, CriticMediator
+import wandb
 
 
 class Mediator(MetaAgent, ABC):
@@ -61,6 +62,10 @@ class Mediator(MetaAgent, ABC):
         self.opt_critic.zero_grad()
 
         mediator_actor_loss_global = torch.cat(mediator_actor_loss_global)
+
+        wandb.log("mediator policy loss", mediator_actor_loss_global.mean().item())
+        wandb.log("mediator critic loss", mediator_critic_loss.item())
+
         mediator_actor_loss_global.mean().backward()
 
         mediator_critic_loss.backward()

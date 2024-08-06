@@ -23,13 +23,13 @@ def pd_log(controller, reward, pick_mediator):
     # print(f'ENTROPY_AGENT: {controller.agents[0].entropy_coef:.3f}, ENTROPY_MEDIATOR: {controller.mediator.entropy_coef:.3f}',
     #       end='\n\n')
 
-    wandb.log({
-        'step_reward_mean': mean_step_reward,
-        'step_reward_std': std_step_reward,
-        'pick_mediator': pick_mediator,
-        'entropy_agent': controller.agents[0].entropy_coef,
-        'entropy_mediator': controller.mediator.entropy_coef,
-    })
+    # wandb.log({
+    #     'step_reward_mean': mean_step_reward,
+    #     'step_reward_std': std_step_reward,
+    #     'pick_mediator': pick_mediator,
+    #     'entropy_agent': controller.agents[0].entropy_coef,
+    #     'entropy_mediator': controller.mediator.entropy_coef,
+    # })
 
     # print('------ POLICY AGENTS ------')
     # print(format('D', ' >12'), end='')

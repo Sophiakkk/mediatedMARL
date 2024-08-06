@@ -3,11 +3,13 @@ from abc import ABC
 import numpy as np
 
 from src.base.meta_agent.meta_agent import MetaAgent
+import wandb
 
 
 class Agent(MetaAgent, ABC):
     def __init__(self, input_sizes, agent_nn, cfg_agent, cfg, agent_i):
         super(Agent, self).__init__(input_sizes, agent_nn, cfg_agent=cfg_agent, cfg=cfg, agent_i=agent_i)
+        self.agent_i = agent_i
 
     def update_agent(self, state, action, reward, next_state, done):
         agent_critic_loss, advantage = self.critic_loss(state, next_state,
@@ -21,6 +23,8 @@ class Agent(MetaAgent, ABC):
 
         self.opt_actor.zero_grad()
         self.opt_critic.zero_grad()
+        wandb.log({'agent{}_actor_loss'.format(self.agent_i): agent_actor_loss.item()})
+        wandb.log({'agent{}_critic_loss'.format(self.agent_i): agent_critic_loss.item()})
         agent_critic_loss.backward()
         agent_actor_loss.backward()
         self.opt_actor.step()
