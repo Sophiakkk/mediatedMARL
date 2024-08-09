@@ -45,7 +45,7 @@ def train(cfg):
     return info
 
 if __name__ == '__main__':
-    group = 'vanilla'
+    group = 'vanilla_01'
     wandb.init(project='Mediated_MARL_PD_vanilla', group=group, mode='online')
     train()
     wandb.finish()
