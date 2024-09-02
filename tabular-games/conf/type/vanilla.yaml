@@ -4,7 +4,7 @@ agent:
   lr_c: 1e-3 # default: 8e-4
   gamma: 0.99
   entropy_coef: 1  # 3.5
-  n_hidden: 8
+  n_hidden: 64 # default: 8
   entropy_decrease: 0.0005
 
 mediator:

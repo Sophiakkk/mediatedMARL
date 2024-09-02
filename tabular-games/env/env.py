@@ -8,7 +8,7 @@ from env.log import rpd_log, iter_log, pgg_log, pd_log
 class Dilemma:
     def __init__(self):
         self.states = [
-            [[(-20, -20), (0, -30)], [(-30, 0), (-10, -10)]]
+            [[(-2, -2), (0, -3)], [(-3, 0), (-1, -1)]]
         ]
         self.done = 0
         self.state = 0
