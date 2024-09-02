@@ -48,7 +48,7 @@ def train(cfg):
     return info
 
 if __name__ == '__main__':
-    config = OmegaConf.load('tabular-games/conf/type/vanilla.yaml')
+    config = OmegaConf.load('conf/type/vanilla.yaml')
     batch_size = config.env.batch_size
     hidden_size = config.agent.n_hidden
     lr_a = config.agent.lr_a
