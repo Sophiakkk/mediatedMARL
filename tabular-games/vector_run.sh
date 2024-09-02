@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --mem=4GB
-#SBATCH --ntasks=4
+#SBATCH --mem=4G
+#SBATCH --ntasks=1
 #SBATCH --partition=cpu
 #SBATCH --cpus-per-task=4
 #SBATCH --array=1-10

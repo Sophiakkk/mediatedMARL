@@ -7,6 +7,7 @@ from src.vanilla_mediator.agent.actor_critic_agent import ActorAgent, CriticAgen
 from src.vanilla_mediator.agent.agent import Agent as AgentVanilla
 from src.vanilla_mediator.mediator.actor_critic_mediator import ActorMediator, CriticMediator
 from src.vanilla_mediator.mediator.mediator import Mediator as MediatorVanilla
+import wandb
 
 
 class EyeOfGodVanilla(EyeOfGodBase):
@@ -60,7 +61,11 @@ class EyeOfGodVanilla(EyeOfGodBase):
         # reward_coalition = torch.sum(rewards * coalition, dim=1).unsqueeze(-1)
 
         # Update agents
+        mean_social_welfare = torch.mean(torch.sum(rewards, dim=1))
+        wandb.log({'mean_social_welfare': mean_social_welfare.item()})
         for i, agent in enumerate(self.agents):
+            mean_reward_i = torch.mean(rewards[:, i])
+            wandb.log({f'agent_{i}_mean_reward': mean_reward_i.item()})
             agent.update_agent(state,  # obs
                                actions_agents[:, i],
                                rewards[:, i].unsqueeze(-1),
@@ -143,7 +148,11 @@ class EyeOfGodVanilla(EyeOfGodBase):
         return trajectory
 
     def train(self, env, log=False):
-        eval_episodes = self.cfg.env.eval_episodes
+        # eval_episodes = self.cfg.env.eval_episodes
+
+        dummy_state = [1, 0]
+        coalitions = torch.tensor([[0, 1], [1, 0], [1, 1]]).long()
+        agent_is = torch.tensor([[1, 0], [0, 1]]).long()
 
         # get batch of trajectories
         for i in range(self.cfg.env.iterations):
@@ -155,13 +164,34 @@ class EyeOfGodVanilla(EyeOfGodBase):
                 steps_ctn += len(traj)
                 trajectories.append(traj)
 
-            # update
+            # update after collect a batch of trajectories
             self.update(trajectories)
+            
+            # log policy
+            for k, agent in enumerate(self.agents):
+                agent_policy = agent.get_policy(self._tensorify(dummy_state))
+                agent_probs = agent_policy.probs.detach().numpy()
+                wandb.log({f'agent_{k}_policy_for_D': agent_probs[0][0]})
+                wandb.log({f'agent_{k}_policy_for_C': agent_probs[0][1]})
+                wandb.log({f'agent_{k}_policy_for_MED': agent_probs[0][2]})
+            # log mediator policy
+            for coalition in coalitions:
+                mediator_probs = []
+                for agent_i in agent_is:
+                    mediator_policy = self.mediator.get_policy(self._tensorify([dummy_state, coalition, agent_i]))
+                    mediator_probs.append(mediator_policy.probs.detach().numpy())
+
+                # print(f'MEDIATOR {coalition.numpy()}', end='   ')
+                # print(f'{probs[0][0]}   |   {probs[1][0]}')
+                wandb.log({f'mediator_policy_for_agent_0_D for coalition {coalition.numpy()}': mediator_probs[0][0][0]})
+                wandb.log({f'mediator_policy_for_agent_0_C for coalition {coalition.numpy()}': mediator_probs[0][0][1]})
+                wandb.log({f'mediator_policy_for_agent_1_D for coalition {coalition.numpy()}': mediator_probs[1][0][0]})
+                wandb.log({f'mediator_policy_for_agent_1_C for coalition {coalition.numpy()}': mediator_probs[1][0][1]})
 
             # if log:
             #     if i % 100 == 0:
             #         print(f'ITERATION {i}:')
-            self.evaluate_policy(eval_episodes, env)
+            # self.evaluate_policy(eval_episodes, env)
 
     def evaluate_policy(self, n_episodes, env):
         all_rewards = []
