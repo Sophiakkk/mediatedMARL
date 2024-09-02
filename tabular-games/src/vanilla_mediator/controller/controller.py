@@ -193,8 +193,9 @@ class EyeOfGodVanilla(EyeOfGodBase):
                 wandb.log({f'mediator_policy_for_agent_1_D for coalition {coalition.numpy()}': mediator_probs[1][0][0]})
                 wandb.log({f'mediator_policy_for_agent_1_C for coalition {coalition.numpy()}': mediator_probs[1][0][1]})
                 with torch.no_grad():
-                    v = self.mediator.critic(self._tensorify([dummy_state, coalition]))
-                wandb.log({f'mediator_value for coalition {coalition.numpy()}': v.item()})
+                    v = self.mediator.critic(self._tensorify([dummy_state, coalition])).detach().squeeze()
+                wandb.log({f'mediator_value of agent 0 for coalition {coalition.numpy()}': v[0].item()})
+                wandb.log({f'mediator_value of agent 1 for coalition {coalition.numpy()}': v[1].item()})
             # if log:
             #     if i % 100 == 0:
             #         print(f'ITERATION {i}:')

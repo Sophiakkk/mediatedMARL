@@ -11,6 +11,9 @@ from src.n_step_threat.controller.controller import EyeOfGodNStep
 from src.vanilla_mediator.controller.controller import EyeOfGodVanilla
 
 from utils_pkg.wandb_notion import commit_to_notion
+import os
+
+# os.environ['WANDB_MODE'] = 'disabled'
 
 @hydra.main(config_path='conf', config_name='config')
 def train(cfg):
