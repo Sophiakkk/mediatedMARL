@@ -13,12 +13,12 @@ from src.vanilla_mediator.controller.controller import EyeOfGodVanilla
 from utils_pkg.wandb_notion import commit_to_notion
 import os
 
-# os.environ['WANDB_MODE'] = 'disabled'
+os.environ['WANDB_MODE'] = 'disabled'
 
-@hydra.main(config_path='conf', config_name='config')
+# @hydra.main(config_path='conf', config_name='config')
 def train(cfg):
-    cfg_notion = cfg.notion
-    cfg = cfg.type
+    # cfg_notion = cfg.notion
+    # cfg = cfg.type
     cfg_wb = OmegaConf.to_container(cfg, resolve=True)
     # wandb.init(project='Mediated_MARL_PD_vanilla', group='test', config=cfg_wb, job_type=cfg.type, mode='online')
 
@@ -48,7 +48,14 @@ def train(cfg):
     return info
 
 if __name__ == '__main__':
-    group = 'vanilla_01'
-    wandb.init(project='Mediated_MARL_PD_vanilla', group=group, mode='online')
-    train()
+    config = OmegaConf.load('tabular-games/conf/type/vanilla.yaml')
+    batch_size = config.env.batch_size
+    hidden_size = config.agent.n_hidden
+    lr_a = config.agent.lr_a
+    lr_c = config.agent.lr_c
+    nIterationd = config.env.iterations
+    group = f'batch_size={batch_size}_hidden_size={hidden_size}_lr_a={lr_a}_lr_c={lr_c}_nIterations={nIterationd}'
+    print(group)
+    wandb.init(project='Mediated_MARL_PD_vanilla', group=group)
+    train(config)
     wandb.finish()
