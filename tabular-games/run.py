@@ -52,10 +52,12 @@ if __name__ == '__main__':
     config = OmegaConf.load('conf/type/vanilla.yaml')
     batch_size = config.env.batch_size
     hidden_size = config.agent.n_hidden
-    lr_a = config.agent.lr_a
-    lr_c = config.agent.lr_c
+    lr_a_agent = config.agent.lr_a
+    lr_c_agent = config.agent.lr_c
+    lr_a_mediator = config.mediator.lr_a
+    lr_c_mediator = config.mediator.lr_c
     nIterationd = config.env.iterations
-    group = f'batch_size={batch_size}_hidden_size={hidden_size}_lr_a={lr_a}_lr_c={lr_c}_nIterations={nIterationd}'
+    group = f'batch_size={batch_size}_hidden_size={hidden_size}_agentlr_a={lr_a_agent}_agentlr_c={lr_c_agent}_mediatorlr_a={lr_a_mediator}_mediatorlr_c={lr_c_mediator}_nIterations={nIterationd}'
     print(group)
     wandb.init(project='Mediated_MARL_PD_vanilla', group=group)
     train(config)
