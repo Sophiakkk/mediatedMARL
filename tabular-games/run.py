@@ -41,11 +41,12 @@ def train(cfg):
 
     zog.train(env, True)
     # print(zog)
-    eval_episodes = cfg.env.eval_episodes
+    # eval_episodes = cfg.env.eval_episodes
 
-    info = zog.evaluate_policy(eval_episodes, env)
+    # info = zog.evaluate_policy(eval_episodes, env)
     # mean_step_reward, pick_mediator, policy_agents, policy_mediator, value_agents, value_mediator
-    return info
+    # return info
+    return 
 
 if __name__ == '__main__':
     config = OmegaConf.load('conf/type/vanilla.yaml')

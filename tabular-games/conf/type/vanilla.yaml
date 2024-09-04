@@ -20,7 +20,7 @@ mediator:
 env:
   state_size: 2
   batch_size: 128
-  iterations: 10000
+  iterations: 5000
   min_transitions_per_update: 128
   min_episodes_per_update: 128
   eval_episodes: 0
