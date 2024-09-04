@@ -56,9 +56,9 @@ if __name__ == '__main__':
     lr_c_agent = config.agent.lr_c
     lr_a_mediator = config.mediator.lr_a
     lr_c_mediator = config.mediator.lr_c
-    entropy_coeff = config.agent.entropy_coeff
+    entropy_coef = config.agent.entropy_coef
     nIterationd = config.env.iterations
-    group = f'entropy={entropy_coeff}_batch_size={batch_size}_hidden_size={hidden_size}_agentlr_a={lr_a_agent}_agentlr_c={lr_c_agent}_mediatorlr_a={lr_a_mediator}_mediatorlr_c={lr_c_mediator}_nIterations={nIterationd}'
+    group = f'entropy={entropy_coef}_batch_size={batch_size}_hidden_size={hidden_size}_agentlr_a={lr_a_agent}_agentlr_c={lr_c_agent}_mediatorlr_a={lr_a_mediator}_mediatorlr_c={lr_c_mediator}_nIterations={nIterationd}'
     print(group)
     wandb.init(project='Mediated_MARL_PD_vanilla', group=group)
     train(config)
