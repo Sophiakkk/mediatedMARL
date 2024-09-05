@@ -3,7 +3,7 @@ agent:
   lr_a: 4e-4
   lr_c: 8e-4
   gamma: 0.99
-  entropy_coef: 3.5  # 3.5
+  entropy_coef: 2  # 3.5
   n_hidden: 8
   entropy_decrease: 0.0005
 
@@ -12,7 +12,7 @@ mediator:
   lr_a: 4e-4
   lr_c: 8e-4
   gamma: 0.99
-  entropy_coef: 3.5
+  entropy_coef: 2
   n_hidden: 8
   entropy_decrease: 0.0005
   enabled: True
