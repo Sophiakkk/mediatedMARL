@@ -1,6 +1,6 @@
 agent:
   action_size: 3  # make "2" to turn mediator off
-  lr_a: 4e-4
+  lr_a: 1e-4 # 4e-4
   lr_c: 8e-4
   gamma: 0.99
   entropy_coef: 2  # 3.5
@@ -9,7 +9,7 @@ agent:
 
 mediator:
   action_size: 2
-  lr_a: 4e-4
+  lr_a: 1e-4 # 4e-4
   lr_c: 8e-4
   gamma: 0.99
   entropy_coef: 2
