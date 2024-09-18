@@ -1,27 +1,27 @@
 agent:
   action_size: 3  # make "2" to turn mediator off
-  lr_a: 1e-4 # 4e-4
+  lr_a: 4e-4 # 4e-4
   lr_c: 8e-4
   gamma: 0.99
   entropy_coef: 2  # 3.5
-  n_hidden: 8
+  n_hidden: 16
   entropy_decrease: 0.0005
 
 mediator:
   action_size: 2
-  lr_a: 1e-4 # 4e-4
+  lr_a: 4e-4 # 4e-4
   lr_c: 8e-4
   gamma: 0.99
   entropy_coef: 2
-  n_hidden: 8
+  n_hidden: 16
   entropy_decrease: 0.0005
   enabled: True
 
 env:
   state_size: 2
-  batch_size: 128
-  iterations: 10000
-  min_transitions_per_update: 128
+  batch_size: 500
+  iterations: 20000
+  min_transitions_per_update: 500
   min_episodes_per_update: 5
   eval_episodes: 50
   n_agents: 2
