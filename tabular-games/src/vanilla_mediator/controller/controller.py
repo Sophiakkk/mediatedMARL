@@ -26,7 +26,7 @@ class EyeOfGodVanilla(EyeOfGodBase):
 
     def _get_batch(self, trajectories):
         transitions = [t for traj in trajectories for t in traj]  # Turn a list of trajectories into list of transitions
-        d_st, st, act_agents, act_mediator, coal, rew, n_st, n_coal, d = map(np.array, zip(*transitions))
+        d_st, st, act_agents, act_mediator, coal, rew, n_st, n_coal, d, returns = map(np.array, zip(*transitions))
 
         idx = np.random.randint(0, len(transitions), self.batch_size)  # Choose random batch
 
@@ -39,6 +39,7 @@ class EyeOfGodVanilla(EyeOfGodBase):
         next_state = torch.tensor(n_st[idx], device=self.device, dtype=self.dtype)
         next_coalition = torch.tensor(n_coal[idx], device=self.device, dtype=self.dtype)
         done = torch.tensor(d[idx], device=self.device, dtype=self.dtype).unsqueeze(-1)
+        returns = torch.tensor(returns[idx], device=self.device, dtype=self.dtype)
 
         assert state.dim() == 2, f'{state.shape=}'
         assert dummy_state.dim() == 2, f'{dummy_state.shape=}'
@@ -50,22 +51,25 @@ class EyeOfGodVanilla(EyeOfGodBase):
         assert done.dim() == 2, f'{done.shape=}'
 
         batch = [state, dummy_state, actions_agents, actions_mediator,
-                 coalition, rewards, next_state, next_coalition, done]
+                 coalition, rewards, next_state, next_coalition, done, returns]
 
         return batch
 
     def update(self, trajectories):
         state, dummy_state, actions_agents, actions_mediator, \
-        coalition, rewards, next_state, next_coalition, done = self._get_batch(trajectories)
+        coalition, rewards, next_state, next_coalition, done, returns = self._get_batch(trajectories)
 
         # reward_coalition = torch.sum(rewards * coalition, dim=1).unsqueeze(-1)
 
         # Update agents
-        mean_social_welfare = torch.mean(torch.sum(rewards, dim=1))
+        # mean_social_welfare = torch.mean(torch.sum(rewards, dim=1))
+        mean_social_welfare = torch.mean(torch.sum(returns, dim=1))
         wandb.log({'mean_social_welfare': mean_social_welfare.item()})
         for i, agent in enumerate(self.agents):
-            mean_reward_i = torch.mean(rewards[:, i])
-            wandb.log({f'agent_{i}_mean_reward': mean_reward_i.item()})
+            # mean_reward_i = torch.mean(rewards[:, i])
+            mean_return_i = torch.mean(returns[:, i])
+            # wandb.log({f'agent_{i}_mean_reward': mean_reward_i.item()})
+            wandb.log({f'agent_{i}_mean_return': mean_return_i.item()})
             agent.update_agent(state,  # obs
                                actions_agents[:, i],
                                rewards[:, i].unsqueeze(-1),
@@ -94,6 +98,7 @@ class EyeOfGodVanilla(EyeOfGodBase):
         ts = 0
 
         while not done:
+            returns = (0, 0)
             # Agents' moves
             actions_agents = []
             # dummy_state = np.zeros(self.cfg.env.state_size)  # [0, 0]
@@ -126,6 +131,7 @@ class EyeOfGodVanilla(EyeOfGodBase):
                     actions_to_env[i] = actions_mediator[i]
 
             next_state, rewards, done = env.step(*actions_to_env)
+            returns += returns * self.cfg.env.gamma + rewards
             # trajectory.append((state, state, actions_agents, actions_mediator, coalition.copy(),
             #                    rewards, next_state, coalition.copy(), done))
 
@@ -140,7 +146,7 @@ class EyeOfGodVanilla(EyeOfGodBase):
             coalition_prev = coalition.copy()
 
         trajectory.append((state_prev, state_prev, actions_agents, actions_mediator, coalition.copy(),
-                           rewards, next_state, coalition, done))
+                           rewards, next_state, coalition, done, returns))
 
         if test:
             return all_rewards, pick_mediator, actions_to_env
