@@ -24,7 +24,7 @@ def train(cfg):
 
     if cfg.name == 'vanilla':
         print(f'Training vanilla mediator in PD')
-        env = Dilemma()
+        env = Dilemma(horizon=cfg.env.horizon)
         zog = EyeOfGodVanilla(cfg)
     elif cfg.name == 'n_step':
         print(f'Training {cfg.env.steps_commit}-step mediator...', end='\n\n')
@@ -59,7 +59,6 @@ if __name__ == '__main__':
     entropy_coef = config.agent.entropy_coef
     nIterationd = config.env.iterations
     group = f'entropy={entropy_coef}_batch_size={batch_size}_hidden_size={hidden_size}_allr_a={lr_a_agent}_allr_c={lr_c_agent}_nIterations={nIterationd}'
-    print(group)
-    wandb.init(project='Mediated_MARL_PD_vanilla', group=group)
+    wandb.init(project='Mediated_MARL_IPC_vanilla', group=group)
     train(config)
     wandb.finish()

@@ -32,15 +32,15 @@ from env.log import rpd_log, iter_log, pgg_log, pd_log
 #         return info
 
 class Dilemma:
-    def __init__(self):
+    def __init__(self, horizon):
         self.states = [
-            [[(0, 0), (2, -1)], [(-1, 2), (0, 0)]]
+            [[(0.0, 0.0), (2.0, -1.0)], [(-1.0, 2.0), (0.0, 0.0)]]
         ]
         self.done = 0
         self.state = 0
         self.step_count = 0
         self.dummy_state = [1., 0.]
-        self.horizon = 2
+        self.horizon = horizon
         
     def reset(self):
         self.done = 0

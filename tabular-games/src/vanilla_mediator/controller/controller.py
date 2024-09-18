@@ -96,9 +96,8 @@ class EyeOfGodVanilla(EyeOfGodBase):
         pick_mediator = []
         all_rewards = []
         ts = 0
-
+        returns = np.array((0.0, 0.0))
         while not done:
-            returns = (0, 0)
             # Agents' moves
             actions_agents = []
             # dummy_state = np.zeros(self.cfg.env.state_size)  # [0, 0]
@@ -116,7 +115,7 @@ class EyeOfGodVanilla(EyeOfGodBase):
 
             if ts > 0:
                 trajectory.append((state_prev, state_prev, actions_agents_prev, actions_mediator, coalition_prev,
-                                   rewards, next_state, coalition, done))
+                                   rewards, next_state, coalition, done, returns))
 
             # action "-1" means the mediator was not chosen
             actions_mediator = np.full(self.n_agents, -1)
@@ -131,7 +130,7 @@ class EyeOfGodVanilla(EyeOfGodBase):
                     actions_to_env[i] = actions_mediator[i]
 
             next_state, rewards, done = env.step(*actions_to_env)
-            returns += returns * self.cfg.env.gamma + rewards
+            returns = returns * self.cfg.agent.gamma + rewards
             # trajectory.append((state, state, actions_agents, actions_mediator, coalition.copy(),
             #                    rewards, next_state, coalition.copy(), done))
 
