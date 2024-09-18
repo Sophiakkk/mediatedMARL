@@ -5,17 +5,46 @@ from torch.nn.functional import one_hot
 from env.log import rpd_log, iter_log, pgg_log, pd_log
 
 
+# class Dilemma:
+#     def __init__(self):
+#         self.states = [
+#             [[(-2, -2), (0, -3)], [(-3, 0), (-1, -1)]]
+#         ]
+#         self.done = 0
+#         self.state = 0
+#         self.dummy_state = [1., 0.]
+        
+#     def reset(self):
+#         self.done = 0
+#         return self.dummy_state
+    
+#     def get_payoffs(self, action_1, action_2):
+#         return self.states[self.state][action_1][action_2]
+        
+#     def step(self, action_1, action_2):
+#         reward = self.get_payoffs(action_1, action_2)
+#         self.done = 1
+#         return self.dummy_state, reward, self.done
+
+#     def log(self, controller, rewards, pick_mediator, *args):
+#         info = pd_log(controller, rewards, pick_mediator)
+#         # info = iter_log(controller, rewards, pick_mediator)
+#         return info
+
 class Dilemma:
     def __init__(self):
         self.states = [
-            [[(-2, -2), (0, -3)], [(-3, 0), (-1, -1)]]
+            [[(0, 0), (2, -1)], [(-1, 2), (0, 0)]]
         ]
         self.done = 0
         self.state = 0
+        self.step_count = 0
         self.dummy_state = [1., 0.]
+        self.horizon = 2
         
     def reset(self):
         self.done = 0
+        self.step_count = 0
         return self.dummy_state
     
     def get_payoffs(self, action_1, action_2):
@@ -23,14 +52,14 @@ class Dilemma:
         
     def step(self, action_1, action_2):
         reward = self.get_payoffs(action_1, action_2)
-        self.done = 1
+        self.step_count += 1
+        self.done = self.step_count==self.horizon
         return self.dummy_state, reward, self.done
 
     def log(self, controller, rewards, pick_mediator, *args):
         info = pd_log(controller, rewards, pick_mediator)
         # info = iter_log(controller, rewards, pick_mediator)
         return info
-
 
 class RandomizedPrisonersDilemma(Dilemma):
     def __init__(self):
