@@ -58,7 +58,8 @@ if __name__ == '__main__':
     lr_c_mediator = config.mediator.lr_c
     entropy_coef = config.agent.entropy_coef
     nIterationd = config.env.iterations
-    group = f'entropy={entropy_coef}_batch_size={batch_size}_hidden_size={hidden_size}_allr_a={lr_a_agent}_allr_c={lr_c_agent}_nIterations={nIterationd}'
+    horizon = config.env.horizon
+    group = f'horizon={horizon}_entropy={entropy_coef}_batch_size={batch_size}_hidden_size={hidden_size}_allr_a={lr_a_agent}_allr_c={lr_c_agent}_nIterations={nIterationd}'
     wandb.init(project='Mediated_MARL_IPC_vanilla', group=group)
     train(config)
     wandb.finish()
