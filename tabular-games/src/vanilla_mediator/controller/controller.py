@@ -14,8 +14,8 @@ class EyeOfGodVanilla(EyeOfGodBase):
     def __init__(self, cfg, Agent=AgentVanilla, Mediator=MediatorVanilla,
                  nn_agent=(ActorAgent, CriticAgent), nn_mediator=(ActorMediator, CriticMediator)):
         self.cfg = cfg
-        self.entropy_coeff = cfg.agent.entropy_coeff
-        self.entropy_coeff_decay = cfg.agent.entropy_coeff_decay
+        self.entropy_coeff = cfg.agent.entropy_coef
+        self.entropy_coeff_decay = cfg.agent.entropy_decrease
 
         n_inputs = [
             cfg.env.state_size,  # agent_actor_n_inputs
@@ -62,7 +62,7 @@ class EyeOfGodVanilla(EyeOfGodBase):
         coalition, rewards, next_state, next_coalition, done, returns = self._get_batch(trajectories)
 
         # reward_coalition = torch.sum(rewards * coalition, dim=1).unsqueeze(-1)
-
+        #print("begin an update")
         # Update agents
         # mean_social_welfare = torch.mean(torch.sum(rewards, dim=1))
         mean_social_welfare = torch.mean(torch.sum(returns, dim=1))
