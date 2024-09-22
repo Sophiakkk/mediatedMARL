@@ -59,7 +59,8 @@ if __name__ == '__main__':
     entropy_coef = config.agent.entropy_coef
     nIterationd = config.env.iterations
     horizon = config.env.horizon
+    num_iter_per_batch = config.env.num_iter_per_batch
     group = f'horizon={horizon}_entropy={entropy_coef}_batch_size={batch_size}_hidden_size={hidden_size}_allr_a={lr_a_agent}_allr_c={lr_c_agent}_nIterations={nIterationd}'
-    wandb.init(project='Mediated_MARL_IPC_vanilla', group=group)
+    wandb.init(project='{}update_Mediated_MARL_IPC_vanilla'.format(str(num_iter_per_batch)), group=group, dir='/scratch/ssd004/scratch/shuhui/commitment/')
     train(config)
     wandb.finish()
