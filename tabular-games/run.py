@@ -65,6 +65,6 @@ if __name__ == '__main__':
     nIterationd = config.env.iterations
     horizon = config.env.horizon
     group = f'horizon={horizon}_entropy={entropy_coef}_batch_size={batch_size}_hidden_size={hidden_size}_allr_a={lr_a_agent}_allr_c={lr_c_agent}_nIterations={nIterationd}'
-    wandb.init(project='{}update_Mediated_MARL_Grid_Game_vanilla'.format(num_iter_per_batch), group=group, dir='/scratch/ssd004/scratch/shuhui/commitment/')
+    wandb.init(project='{}update_Mediated_MARL_Grid_Game_vanilla'.format(str(num_iter_per_batch)), group=group, dir='/scratch/ssd004/scratch/shuhui/commitment/')
     train(config)
     wandb.finish()
