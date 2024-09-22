@@ -61,9 +61,10 @@ if __name__ == '__main__':
     lr_a_mediator = config.mediator.lr_a
     lr_c_mediator = config.mediator.lr_c
     entropy_coef = config.agent.entropy_coef
+    num_iter_per_batch = config.env.num_iter_per_batch
     nIterationd = config.env.iterations
     horizon = config.env.horizon
     group = f'horizon={horizon}_entropy={entropy_coef}_batch_size={batch_size}_hidden_size={hidden_size}_allr_a={lr_a_agent}_allr_c={lr_c_agent}_nIterations={nIterationd}'
-    wandb.init(project='Mediated_MARL_Grid_Game_vanilla', group=group)
+    wandb.init(project='{}update_Mediated_MARL_Grid_Game_vanilla'.format(num_iter_per_batch), group=group, dir='/scratch/ssd004/scratch/shuhui/commitment/')
     train(config)
     wandb.finish()
