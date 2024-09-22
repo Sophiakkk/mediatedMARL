@@ -21,6 +21,7 @@ env:
   state_size: 2
   batch_size: 1024
   iterations: 10000
+  num_iter_per_batch: 30
   min_transitions_per_update: 1024 # same as batch_size
   min_episodes_per_update: 5
   eval_episodes: 50

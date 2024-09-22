@@ -55,7 +55,7 @@ class EyeOfGodVanilla(EyeOfGodBase):
 
         return batch
 
-    def update(self, trajectories):
+    def update(self, trajectories, num_iter_per_batch):
         state, dummy_state, actions_agents, actions_mediator, \
         coalition, rewards, next_state, next_coalition, done, returns = self._get_batch(trajectories)
 
@@ -70,22 +70,24 @@ class EyeOfGodVanilla(EyeOfGodBase):
             mean_return_i = torch.mean(returns[:, i])
             # wandb.log({f'agent_{i}_mean_reward': mean_reward_i.item()})
             wandb.log({f'agent_{i}_mean_return': mean_return_i.item()})
-            agent.update_agent(state,  # obs
-                               actions_agents[:, i],
-                               rewards[:, i].unsqueeze(-1),
-                               next_state,
-                               done)  # auxiliary state for actor loss computation
+            for _ in range(num_iter_per_batch):
+                agent.update_agent(state,  # obs
+                                actions_agents[:, i],
+                                rewards[:, i].unsqueeze(-1),
+                                next_state,
+                                done)  # auxiliary state for actor loss computation
 
         # Update mediator
         if self.cfg.mediator.enabled is True:
             obs_mediator = torch.cat([state, coalition], dim=-1)
             next_obs_mediator = torch.cat([next_state, next_coalition], dim=-1)
-            self.mediator.update_mediator(obs_mediator,  # obs
-                                          actions_mediator,
-                                          rewards,
-                                          next_obs_mediator,  # next_obs
-                                          coalition,
-                                          done)
+            for _ in range(num_iter_per_batch):
+                self.mediator.update_mediator(obs_mediator,  # obs
+                                            actions_mediator,
+                                            rewards,
+                                            next_obs_mediator,  # next_obs
+                                            coalition,
+                                            done)
 
     def sample_episode(self, env, test=False):
         state, done = env.reset(), 0
@@ -170,7 +172,7 @@ class EyeOfGodVanilla(EyeOfGodBase):
                 trajectories.append(traj)
 
             # update after collect a batch of trajectories
-            self.update(trajectories)
+            self.update(trajectories, num_iter_per_batch=self.cfg.env.num_iter_per_batch)
             
             # log policy
             for k, agent in enumerate(self.agents):
