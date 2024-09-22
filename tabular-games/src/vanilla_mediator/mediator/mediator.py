@@ -24,7 +24,7 @@ class Mediator(MetaAgent, ABC):
 
         return action.squeeze(0).numpy()
 
-    def update_mediator(self, state, actions, reward, next_state, coalition, done):
+    def update_mediator(self, state, actions, reward, next_state, coalition, done, entropy_coeff):
         mediator_actor_loss_global = []
         update_required = False
 
@@ -51,7 +51,7 @@ class Mediator(MetaAgent, ABC):
             entropy = policy.entropy().mean()
             mediator_actor_loss = self.actor_loss(log_prob, advantage_single)
 
-            mediator_actor_loss_global.append((mediator_actor_loss - self.entropy_coef * entropy))
+            mediator_actor_loss_global.append((mediator_actor_loss - entropy_coeff * entropy))
             update_required = True
 
         if not update_required:  # if any meta_agent have chosen Mediator then update
@@ -72,5 +72,3 @@ class Mediator(MetaAgent, ABC):
 
         self.opt_actor.step()
         self.opt_critic.step()
-
-        self.entropy_coef = np.maximum(0.1, self.entropy_coef - self.entropy_coef_decrease)

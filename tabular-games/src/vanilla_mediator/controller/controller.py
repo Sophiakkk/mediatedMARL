@@ -14,6 +14,8 @@ class EyeOfGodVanilla(EyeOfGodBase):
     def __init__(self, cfg, Agent=AgentVanilla, Mediator=MediatorVanilla,
                  nn_agent=(ActorAgent, CriticAgent), nn_mediator=(ActorMediator, CriticMediator)):
         self.cfg = cfg
+        self.entropy_coeff = cfg.agent.entropy_coeff
+        self.entropy_coeff_decay = cfg.agent.entropy_coeff_decay
 
         n_inputs = [
             cfg.env.state_size,  # agent_actor_n_inputs
@@ -75,7 +77,7 @@ class EyeOfGodVanilla(EyeOfGodBase):
                                 actions_agents[:, i],
                                 rewards[:, i].unsqueeze(-1),
                                 next_state,
-                                done)  # auxiliary state for actor loss computation
+                                done, self.entropy_coeff)  # auxiliary state for actor loss computation
 
         # Update mediator
         if self.cfg.mediator.enabled is True:
@@ -87,7 +89,8 @@ class EyeOfGodVanilla(EyeOfGodBase):
                                             rewards,
                                             next_obs_mediator,  # next_obs
                                             coalition,
-                                            done)
+                                            done, self.entropy_coeff)
+        self.entropy_coeff =  np.maximum(0.1, self.entropy_coeff - self.entropy_coeff_decay)
 
     def sample_episode(self, env, test=False):
         state, done = env.reset(), 0
