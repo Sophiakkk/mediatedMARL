@@ -20,7 +20,7 @@ class GridSocialDilemmaEnv(gym.Env):
 
         self.initial_position_agent_0 = np.identity(self.grid_size)[0]
         self.initial_position_agent_1 = np.identity(self.grid_size)[-1]
-        self.initial_state = np.concatenate([self.initial_position_agent_0, self.initial_position_agent_1],axis=0).reshape(1,-1)
+        self.initial_state = np.concatenate([self.initial_position_agent_0, self.initial_position_agent_1],axis=0)
         self.agent_positions = [0, self.grid_size - 1]
 
     def reset(self):
@@ -29,9 +29,9 @@ class GridSocialDilemmaEnv(gym.Env):
         state = self.initial_state
         return state
 
-    def step(self, actions):
+    def step(self, action1, action2):
         self.current_step += 1
-        
+        actions = [action1, action2]
         for i in range(self.num_agents):
             if actions[i]==0: # stay
                 if self.agent_positions[i] > 0:
@@ -49,7 +49,7 @@ class GridSocialDilemmaEnv(gym.Env):
                     AssertionError("Over the grid size")
         
         # reveal agents' positions
-        state = np.concatenate([np.identity(self.grid_size)[self.agent_positions[0]], np.identity(self.grid_size)[self.agent_positions[1]]],axis=0).reshape(1,-1)            
+        state = np.concatenate([np.identity(self.grid_size)[self.agent_positions[0]], np.identity(self.grid_size)[self.agent_positions[1]]],axis=0)   
         immediate_rewards = self.calculate_rewards()
         
         done = (self.current_step == self.max_steps)
@@ -60,7 +60,7 @@ class GridSocialDilemmaEnv(gym.Env):
         pos_0, pos_1 = self.agent_positions
         reward_0 = pos_0 - self.conflict_level*(self.grid_size-1 - pos_1)
         reward_1 = self.grid_size-1 - pos_1 - self.conflict_level*pos_0
-        rewards = np.array([reward_0, reward_1])
+        rewards = (reward_0, reward_1)
         return rewards
 
     def render(self):

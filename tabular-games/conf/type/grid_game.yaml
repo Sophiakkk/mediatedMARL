@@ -18,7 +18,7 @@ mediator:
   enabled: True
 
 env:
-  state_size: 2
+  state_size: 4
   batch_size: 512
   iterations: 10000
   min_transitions_per_update: 512 # same as batch_size
@@ -29,5 +29,5 @@ env:
   grid_size: 2
 
 device: "cpu"
-name: vanilla
+name: grid_game
 type: test

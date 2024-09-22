@@ -1,4 +1,4 @@
-import hydra
+# import hydra
 import numpy as np
 import torch
 import wandb
@@ -6,7 +6,7 @@ from omegaconf import OmegaConf
 import matplotlib.pyplot as plt
 import argparse
 
-from env.env import IterativePrisonersDilemma, Dilemma
+from env.env import IterativePrisonersDilemma, Dilemma, GridSocialDilemmaEnv
 from src.n_step_threat.controller.controller import EyeOfGodNStep
 from src.vanilla_mediator.controller.controller import EyeOfGodVanilla
 
@@ -31,6 +31,10 @@ def train(cfg):
         env = IterativePrisonersDilemma()
         zog = EyeOfGodNStep(cfg)
         # zog = EyeOfGodVanilla(cfg)
+    elif cfg.name == 'grid_game':
+        print(f'Training grid game mediator...')
+        env = GridSocialDilemmaEnv(max_steps=cfg.env.horizon)
+        zog = EyeOfGodVanilla(cfg)
     else:
         print('Specify the type of environment!')
         return -1
@@ -49,7 +53,7 @@ def train(cfg):
     return 
 
 if __name__ == '__main__':
-    config = OmegaConf.load('conf/type/vanilla.yaml')
+    config = OmegaConf.load('conf/type/grid_game.yaml')
     batch_size = config.env.batch_size
     hidden_size = config.agent.n_hidden
     lr_a_agent = config.agent.lr_a
@@ -60,6 +64,6 @@ if __name__ == '__main__':
     nIterationd = config.env.iterations
     horizon = config.env.horizon
     group = f'horizon={horizon}_entropy={entropy_coef}_batch_size={batch_size}_hidden_size={hidden_size}_allr_a={lr_a_agent}_allr_c={lr_c_agent}_nIterations={nIterationd}'
-    wandb.init(project='Mediated_MARL_IPC_vanilla', group=group)
+    wandb.init(project='Mediated_MARL_Grid_Game_vanilla', group=group)
     train(config)
     wandb.finish()

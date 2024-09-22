@@ -155,9 +155,9 @@ class EyeOfGodVanilla(EyeOfGodBase):
     def train(self, env, log=False):
         # eval_episodes = self.cfg.env.eval_episodes
 
-        dummy_state = [1, 0]
-        coalitions = torch.tensor([[0, 1], [1, 0], [1, 1]]).long()
-        agent_is = torch.tensor([[1, 0], [0, 1]]).long()
+        # dummy_state = [1, 0]
+        # coalitions = torch.tensor([[0, 1], [1, 0], [1, 1]]).long()
+        # agent_is = torch.tensor([[1, 0], [0, 1]]).long()
 
         # get batch of trajectories
         for i in range(self.cfg.env.iterations):
@@ -172,35 +172,35 @@ class EyeOfGodVanilla(EyeOfGodBase):
             # update after collect a batch of trajectories
             self.update(trajectories)
             
-            # log policy
-            for k, agent in enumerate(self.agents):
-                agent_policy = agent.get_policy(self._tensorify(dummy_state))
-                agent_probs = agent_policy.probs.detach().numpy()
-                wandb.log({f'agent_{k}_policy_for_D': agent_probs[0][0]})
-                wandb.log({f'agent_{k}_policy_for_C': agent_probs[0][1]})
-                wandb.log({f'agent_{k}_policy_for_MED': agent_probs[0][2]})
-                # log critic
-                with torch.no_grad():
-                    v = agent.critic(self._tensorify([dummy_state]))
-                wandb.log({f'agent_{k}_value': v.item()})
+            # # log policy
+            # for k, agent in enumerate(self.agents):
+            #     agent_policy = agent.get_policy(self._tensorify(dummy_state))
+            #     agent_probs = agent_policy.probs.detach().numpy()
+            #     wandb.log({f'agent_{k}_policy_for_D': agent_probs[0][0]})
+            #     wandb.log({f'agent_{k}_policy_for_C': agent_probs[0][1]})
+            #     wandb.log({f'agent_{k}_policy_for_MED': agent_probs[0][2]})
+            #     # log critic
+            #     with torch.no_grad():
+            #         v = agent.critic(self._tensorify([dummy_state]))
+            #     wandb.log({f'agent_{k}_value': v.item()})
             
-            # log mediator policy
-            for coalition in coalitions:
-                mediator_probs = []
-                for agent_i in agent_is:
-                    mediator_policy = self.mediator.get_policy(self._tensorify([dummy_state, coalition, agent_i]))
-                    mediator_probs.append(mediator_policy.probs.detach().numpy())
+            # # log mediator policy
+            # for coalition in coalitions:
+            #     mediator_probs = []
+            #     for agent_i in agent_is:
+            #         mediator_policy = self.mediator.get_policy(self._tensorify([dummy_state, coalition, agent_i]))
+            #         mediator_probs.append(mediator_policy.probs.detach().numpy())
 
-                # print(f'MEDIATOR {coalition.numpy()}', end='   ')
-                # print(f'{probs[0][0]}   |   {probs[1][0]}')
-                wandb.log({f'mediator_policy_for_agent_0_D for coalition {coalition.numpy()}': mediator_probs[0][0][0]})
-                wandb.log({f'mediator_policy_for_agent_0_C for coalition {coalition.numpy()}': mediator_probs[0][0][1]})
-                wandb.log({f'mediator_policy_for_agent_1_D for coalition {coalition.numpy()}': mediator_probs[1][0][0]})
-                wandb.log({f'mediator_policy_for_agent_1_C for coalition {coalition.numpy()}': mediator_probs[1][0][1]})
-                with torch.no_grad():
-                    v = self.mediator.critic(self._tensorify([dummy_state, coalition])).detach().squeeze()
-                wandb.log({f'mediator_value of agent 0 for coalition {coalition.numpy()}': v[0].item()})
-                wandb.log({f'mediator_value of agent 1 for coalition {coalition.numpy()}': v[1].item()})
+            #     # print(f'MEDIATOR {coalition.numpy()}', end='   ')
+            #     # print(f'{probs[0][0]}   |   {probs[1][0]}')
+            #     wandb.log({f'mediator_policy_for_agent_0_D for coalition {coalition.numpy()}': mediator_probs[0][0][0]})
+            #     wandb.log({f'mediator_policy_for_agent_0_C for coalition {coalition.numpy()}': mediator_probs[0][0][1]})
+            #     wandb.log({f'mediator_policy_for_agent_1_D for coalition {coalition.numpy()}': mediator_probs[1][0][0]})
+            #     wandb.log({f'mediator_policy_for_agent_1_C for coalition {coalition.numpy()}': mediator_probs[1][0][1]})
+            #     with torch.no_grad():
+            #         v = self.mediator.critic(self._tensorify([dummy_state, coalition])).detach().squeeze()
+            #     wandb.log({f'mediator_value of agent 0 for coalition {coalition.numpy()}': v[0].item()})
+            #     wandb.log({f'mediator_value of agent 1 for coalition {coalition.numpy()}': v[1].item()})
             # if log:
             #     if i % 100 == 0:
             #         print(f'ITERATION {i}:')
