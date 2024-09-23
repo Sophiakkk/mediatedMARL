@@ -8,4 +8,7 @@
 #SBATCH --cpus-per-task=10
 #SBATCH --array=1-10
 
+source /scratch/ssd004/scratch/shuhui/miniconda3/etc/profile.d/conda.sh
+conda activate contracting
+
 python run.py
