@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=mediated_IPC
+#SBATCH --job-name=med_grid
 #SBATCH --qos=cpu_qos
 #SBATCH --mem=4G
 #SBATCH --time=0-24:00:00
